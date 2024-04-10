@@ -1,0 +1,6 @@
+﻿services:
+  posnerbackend:
+    image: posnerbackend
+    build:
+      context: .
+      dockerfile: PosnerBackend/Dockerfile
