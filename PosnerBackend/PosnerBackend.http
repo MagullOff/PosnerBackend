@@ -1,6 +1,8 @@
 @PosnerBackend_HostAddress = http://localhost:5185
 
-GET {{PosnerBackend_HostAddress}}/weatherforecast/
+GET {{PosnerBackend_HostAddress}}/stats/
 Accept: application/json
 
+POST {{PosnerBackend_HostAddress}}/game/
+Accept: application/json
 ###

@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using PosnerBackend;
+using PosnerBackend.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseNpgsql("Host=localhost;Port=5432;Database=posner;Username=postgres;Password=postgres"));
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddTransient<GameResultRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -14,32 +23,24 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors(corsPolicyBuilder =>
+    corsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+);
+app.MapControllers();
 
-var summaries = new[]
+while (true)
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+    try
     {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+        db.Database.Migrate();
+        break;
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+    }
+}
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    
-}
