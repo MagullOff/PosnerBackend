@@ -9,6 +9,13 @@ namespace PosnerBackend.Controllers;
 [Route("/game")]
 public class GameController(GameResultRepository repository) : ControllerBase
 {
+    [HttpDelete("drop")]
+    public ActionResult DropGameBase()
+    {
+        repository.DropGameResults();
+        return Ok();
+    }
+    
     [HttpPost]
     public ActionResult<ComputingGameResult> PostGameResult(PostGameResultResponse response)
     {

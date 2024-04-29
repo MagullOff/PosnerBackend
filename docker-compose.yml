@@ -1,6 +1,30 @@
-﻿services:
+﻿volumes:
+  app_data:
+networks:
+  app-network:
+    driver: bridge
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=posner
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - app_data:/var/lib/postgresql/data
+    networks:
+      - app-network
   posnerbackend:
-    image: posnerbackend
+    depends_on:
+      - postgres
     build:
       context: .
       dockerfile: PosnerBackend/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      - app-network
