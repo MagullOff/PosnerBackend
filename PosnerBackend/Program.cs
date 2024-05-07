@@ -14,6 +14,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<GameResultRepository>();
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseCors(corsPolicyBuilder =>
     corsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
 );
