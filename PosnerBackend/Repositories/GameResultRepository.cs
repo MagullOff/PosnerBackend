@@ -6,12 +6,6 @@ namespace PosnerBackend.Repositories;
 
 public sealed class GameResultRepository(ApplicationContext context) : BaseRepository(context)
 {
-    public void DropGameResults()
-    {
-        Context.GameResults.RemoveRange(Context.GameResults);
-        SaveChanges();
-    }
-    
     public ComputingGameResult PostGameResult(PostGameResultResponse response)
     {
         var newResult = new GameResultEntity
