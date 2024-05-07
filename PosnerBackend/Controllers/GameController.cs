@@ -19,6 +19,10 @@ public class GameController(GameResultRepository repository) : ControllerBase
     [HttpPost]
     public ActionResult<ComputingGameResult> PostGameResult(PostGameResultResponse response)
     {
+        if (response.Attempts.Where(a => !a.IsCueValid).All(a => a.AttemptResult != AttemptResult.Correct))
+        {
+            return NoContent();
+        }
         try
         {
             var result = repository.PostGameResult(response);
