@@ -27,4 +27,9 @@ public sealed class GameResultRepository(ApplicationContext context) : BaseRepos
     {
         return Context.GameResults.Select(ComputingGameResult.FromEntity).ToList();
     }
+
+    public List<GameResult> GetAllComplete()
+    {
+        return Context.GameResults.Select(GameResult.FromEntity).ToList();
+    }
 }

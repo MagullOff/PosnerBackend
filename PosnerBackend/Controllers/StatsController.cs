@@ -13,7 +13,7 @@ public class StatsController(GameResultRepository repository) : ControllerBase
    [HttpGet]
    public StatsResponse GetStats()
    {
-      var games = repository.GetAll();
+      var games = repository.GetAll().Where(r => r.AverageSpeed is < 500 and > 200).ToList();
       var x = games.Select(g => (double)g.ClueInformationLevel).ToArray();
       var y = games.Select(g => g.AverageSpeed).ToArray();
       var (a, b) = Fit.Line(x, y);

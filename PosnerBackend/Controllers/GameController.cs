@@ -26,4 +26,10 @@ public class GameController(GameResultRepository repository) : ControllerBase
             return BadRequest();
         }
     }
+
+    [HttpGet]
+    public ActionResult<List<GameResult>> GetGameResults()
+    {
+        return repository.GetAllComplete();
+    }
 }
